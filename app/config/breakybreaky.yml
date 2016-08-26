@@ -1,34 +1,42 @@
 parameters:
-  # It doesn't actually matter if these are set, but this is what I've passed in the CLI
-#  env(MAYBE): false
-#  env(METADATA_THRESHOLD): 5
-#  env(PROFILER_DSN): file:/tmp/foo
-#  env(ANNOTATIONS_CACHE): php_array
-#  env(REDIS_DSN): redis://localhost:6973
   maybe: false
 
 framework:
   # Why doesn't this work?
   # Causes: Invalid type for path "framework.test". Expected boolean, but got string.
-  test: %env(MAYBE)%
+#  test: %env(MAYBE)%
   # But this works? From a user perspective, that's weird.
 #  test: %maybe%
 
   # Similarily, why can't I do this?
   # Causes: Invalid type for path "framework.session.metadata_update_threshold". Expected int, but got string.
-  session:
-    metadata_update_threshold: %env(METADATA_THRESHOLD)%
+#  session:
+#    metadata_update_threshold: %env(METADATA_THRESHOLD)%
 
-# Causes exception: Driver "env_PROFILER_DSN_ddb1213b4c95bfb99beab5cdd2b4f4a0" is not supported for the profiler.
-  profiler:
-    dsn: %env(PROFILER_DSN)%
+security:
+  encoders:
+    envbased:
+      # Looks like it's working, but in reality, this will always give you a
+      # MessageDigestPasswordEncoder which may or may not work.
+      algorithm: %env(SECURITY_ALGO)%
 
-# This one is a bit tricky, because it causes a ServiceNotFoundException: The service "annotation_reader" has a dependency on a non-existent service "env_annotations_cache_202cb54f694a974c48c5e9a417ddb8a5"
-  annotations:
-    cache: %env(ANNOTATIONS_CACHE)%
+monolog:
+  handlers:
+    elasticsearch:
+      type:   elasticsearch
+      elasticsearch:
+        host: %env(ES_HOST)%
+    #    # These ones are interesting, because they simply do not work, but you won't find out with an error on compile.
+    #    # The extension base64 encodes the user and pass, so there are no errors, at least
+    #    # not until you get a 403 from ES.
+        user: %env(ES_USER)%
+        password: %env(ES_PASS)%
 
-# This one gives a double exception, and this is actually something that users on e.g. Heroku would want to do!
-# Causes: InvalidArgumentException: Unable to replace alias "cache.default_redis_provider" with actual definition "env_redis_dsn_3e00b8f84842200c95b0245bb4c1afc6".
-# Then: ServiceNotFoundException: You have requested a non-existent service "env_redis_dsn_3e00b8f84842200c95b0245bb4c1afc6".
-  cache:
-    default_redis_provider: %env(REDIS_DSN)%
+swiftmailer:
+  mailers:
+    something:
+      # Now we're getting in to some weird shit. No errors on compile.
+      # 766411d87e0b18188901e6a45a27b583fa5e276289e6040061352d31ee1d705f_1 gets registered as a
+      # service in the DIC, but it seems like it will use SMTP with 127.0.0.1 as the server?
+      # Really weird behavior. Could even work in a local dev env, but fail in prod.
+      url: %env(MAILER_URL)%

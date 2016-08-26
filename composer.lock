@@ -1757,12 +1757,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nicolas-grekas/symfony.git",
-                "reference": "f7e0a54c94157c69763fb255cdd3d544547ab0a1"
+                "reference": "4ec9b3598eee7060cfc175dfa286f4e7f7c9783d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nicolas-grekas/symfony/zipball/f7e0a54c94157c69763fb255cdd3d544547ab0a1",
-                "reference": "f7e0a54c94157c69763fb255cdd3d544547ab0a1",
+                "url": "https://api.github.com/repos/nicolas-grekas/symfony/zipball/4ec9b3598eee7060cfc175dfa286f4e7f7c9783d",
+                "reference": "4ec9b3598eee7060cfc175dfa286f4e7f7c9783d",
                 "shasum": ""
             },
             "require": {
@@ -1893,7 +1893,7 @@
             "support": {
                 "source": "https://github.com/nicolas-grekas/symfony/tree/env-injection"
             },
-            "time": "2016-08-24 08:45:14"
+            "time": "2016-08-26 16:12:21"
         },
         {
             "name": "twig/twig",
